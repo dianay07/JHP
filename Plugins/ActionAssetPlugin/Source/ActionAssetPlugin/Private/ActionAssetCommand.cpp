@@ -5,7 +5,7 @@
 #include "LevelEditor.h"
 
 FActionAssetCommand::FActionAssetCommand()
-	: TCommands("Toolbar_Buttons", FText::FromString(""), NAME_None, FEditorStyle::GetStyleSetName())
+	: TCommands("Toolbar_Buttons", FText::FromString(""), NAME_None, FAppStyle::GetAppStyleSetName())
 {
 	Command = MakeShareable(new FUICommandList());
 }

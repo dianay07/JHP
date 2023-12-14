@@ -1,13 +1,14 @@
 #include "ActionAssetFactory.h"
+#include "ActionAssetPlugin/Data/ActionData.h"
 UActionAssetFactory::UActionAssetFactory()
 {
 	bCreateNew = true;
 
-	SupportedClass = UObject::StaticClass();
+	SupportedClass = UActionData::StaticClass();
 }
 
 UObject* UActionAssetFactory::FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags,
 	UObject* Context, FFeedbackContext* Warn)
 {
-	return NewObject<UObject>(InParent, InClass, InName, Flags);;
+	return NewObject<UActionData>(InParent, InClass, InName, Flags);;
 }

@@ -1,4 +1,8 @@
 #include "ActionAssetContextMenu.h"
+
+#include "ActionAssetEditorWindow.h"
+#include "ActionAssetPlugin/Data/ActionData.h"
+
 FActionAssetContextMenu::FActionAssetContextMenu(EAssetTypeCategories::Type InCategory)
 {
 	Category = InCategory;
@@ -11,7 +15,7 @@ FText FActionAssetContextMenu::GetName() const
 
 UClass* FActionAssetContextMenu::GetSupportedClass() const
 {
-	return UClass::StaticClass();
+	return UActionData::StaticClass();
 }
 
 FColor FActionAssetContextMenu::GetTypeColor() const
@@ -30,5 +34,5 @@ void FActionAssetContextMenu::OpenAssetEditor(const TArray<UObject*>& InObjects,
 	if (InObjects.Num() < 1)
 		return;
 
-	//FWeaponAssetEditor::OpenWindow(InObjects[0]->GetName());
+	FActionAssetEditorWindow::OpenWindow(InObjects[0]->GetName());
 }
