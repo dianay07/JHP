@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Styling/SlateStyle.h"
 
 class ACTIONASSETPLUGIN_API FActionAssetPluginStyle
 {

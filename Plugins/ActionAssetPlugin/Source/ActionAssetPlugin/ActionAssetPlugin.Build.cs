@@ -30,19 +30,21 @@ public class ActionAssetPlugin : ModuleRules
 			}
 			);
 
-        PrivateDependencyModuleNames.Add("Projects");
-        PrivateDependencyModuleNames.Add("InputCore");
-        PrivateDependencyModuleNames.Add("EditorFramework");
-        PrivateDependencyModuleNames.Add("ToolMenus");
-
-        PrivateDependencyModuleNames.Add("CoreUObject");
-        PrivateDependencyModuleNames.Add("Engine");
-        PrivateDependencyModuleNames.Add("Slate");
-        PrivateDependencyModuleNames.Add("SlateCore");
-
-        PrivateDependencyModuleNames.Add("UnrealEd");
-        PrivateDependencyModuleNames.Add("EditorStyle");
-
-        PublicDependencyModuleNames.Add("Niagara");
+		PrivateDependencyModuleNames.AddRange(
+            new string[]
+            {
+                "Projects",
+                "InputCore",
+                "EditorFramework",
+                "UnrealEd",
+                "ToolMenus",
+                "CoreUObject",
+                "Engine",
+                "Slate",
+                "SlateCore",
+                "EditorStyle",
+                "Niagara",
+            }
+            );
     }
 }

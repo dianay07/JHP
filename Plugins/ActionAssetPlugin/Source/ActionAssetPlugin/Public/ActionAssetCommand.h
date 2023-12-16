@@ -18,10 +18,12 @@ public:
 private:
 	TSharedPtr<FExtender> Extender;
 
+public:
 	TSharedPtr<FUICommandList> Command;
 	TSharedPtr<FUICommandInfo> Id;
 
 private:
 	void AddToolBar(FToolBarBuilder& InBuilder);
+	void RegisterMenu();
 	void OnClicked();
 };

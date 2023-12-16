@@ -1,5 +1,6 @@
 #include "ActionAssetEditorWindow.h"
 
+#include "ActionDrawData.h"
 #include "Subsystems/AssetEditorSubsystem.h"
 #include "AssetEditorDetailView.h"
 #include "ActionAssetPlugin/Data/ActionData.h"
@@ -73,12 +74,12 @@ void FActionAssetEditorWindow::Open(FString InAssetName)
 		DetailsView->SetGenericLayoutDetailsDelegate(detailView);
 	}
 
-	//// EquipData
-	//{
-	//	FOnGetPropertyTypeCustomizationInstance instance;
-	//	instance.BindStatic(&SJobEquipData::MakeInstance);
-	//	prop.RegisterCustomPropertyTypeLayout("EquipData", instance);
-	//}
+	// Draw Animation
+	{
+		FOnGetPropertyTypeCustomizationInstance instance;
+		instance.BindStatic(&SActionDrawData::MakeInstance);
+		prop.RegisterCustomPropertyTypeLayout("DrawData", instance);
+	}
 
 	//// SkillData
 	//{
@@ -95,7 +96,7 @@ void FActionAssetEditorWindow::Open(FString InAssetName)
 	//}
 
 
-	TSharedRef<FTabManager::FLayout> layout = FTabManager::NewLayout("AssetEditorWindow_Layout")
+	TSharedRef<FTabManager::FLayout> layout = FTabManager::NewLayout("ActionAssetEditorWindow_Layout")
 		->AddArea
 		(
 			FTabManager::NewPrimaryArea()->SetOrientation(Orient_Vertical)
@@ -104,7 +105,7 @@ void FActionAssetEditorWindow::Open(FString InAssetName)
 				// 고정공간
 				FTabManager::NewStack()
 				->SetSizeCoefficient(0.1f)
-				//->AddTab(GetTabId(), ETabState::OpenedTab)
+				->AddTab(FName("TEST"), ETabState::OpenedTab)
 			)
 			->Split
 			(
@@ -115,14 +116,14 @@ void FActionAssetEditorWindow::Open(FString InAssetName)
 				(
 					FTabManager::NewStack()
 					->SetSizeCoefficient(0.175f)
-					//->AddTab(LeftAreaTabId, ETabState::OpenedTab)
+					->AddTab(LeftAreaTabId, ETabState::OpenedTab)
 					->SetHideTabWell(true)
 				)
 				->Split
 				(
 					FTabManager::NewStack()
 					->SetSizeCoefficient(0.725f)
-					//->AddTab(DetailTabId, ETabState::OpenedTab)
+					->AddTab(DetailTabId, ETabState::OpenedTab)
 					->SetHideTabWell(true)
 				)
 			)
@@ -160,9 +161,9 @@ bool FActionAssetEditorWindow::OnRequestClose()
 		if (FModuleManager::Get().IsModuleLoaded("PropertyEditor"))
 		{
 			FPropertyEditorModule& prop = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-			/*prop.UnregisterCustomPropertyTypeLayout("EquipData");
-			prop.UnregisterCustomPropertyTypeLayout("SkillData");
-			prop.UnregisterCustomPropertyTypeLayout("SkillDamageData");*/
+			prop.UnregisterCustomPropertyTypeLayout("DrawData");
+			//prop.UnregisterCustomPropertyTypeLayout("SkillData");
+			//prop.UnregisterCustomPropertyTypeLayout("SkillDamageData");
 		}
 	}
 

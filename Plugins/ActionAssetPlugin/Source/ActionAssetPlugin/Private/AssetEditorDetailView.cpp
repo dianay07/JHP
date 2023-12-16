@@ -1,5 +1,9 @@
 #include "AssetEditorDetailView.h"
 
+#include "ActionAttackData.h"
+#include "ActionDrawData.h"
+#include "AssetEditorCheckBoxes.h"
+#include "AssetHitData.h"
 #include "DetailCategoryBuilder.h"
 #include "DetailLayoutBuilder.h"
 #include "ActionAssetPlugin/Data/ActionData.h"
@@ -17,108 +21,93 @@ void SAssetEditorDetailView::CustomizeDetails(IDetailLayoutBuilder& DetailBuilde
 
 	DetailBuilder.HideCategory("ActionData");
 
+	IDetailCategoryBuilder& category = DetailBuilder.EditCategory("Asset", FText::FromString("Action Data"));
 	// DrawAnimation Setting
 	{
-		/*IDetailCategoryBuilder& category = DetailBuilder.EditCategory("DrawWeaponData", FText::FromString("DrawWeapon Data"));
 		IDetailPropertyRow& row = category.AddProperty("DrawAnimation", type);
 
 		if(bRefreshByCheckBoxes == false)
 		{
-			
-		}*/
-	}
-
-	// Equipment Setting
-	{
-		/*IDetailCategoryBuilder& category = DetailBuilder.EditCategory("DrawWeaponData", FText::FromString("DrawWeapon Data"));
-		IDetailPropertyRow& row = category.AddProperty("DrawWeaponData", type);
-
-		if (bRefreshByCheckBoxes == false)
-		{
-			TSharedPtr<SAssetCheckBoxes> checkBoxes = SJobEquipData::CreateCheckBoxes();
+			TSharedPtr<SAssetEditorCheckBoxes> checkBoxes = SActionDrawData::CreateCheckBoxes();
 			checkBoxes->AddProperties(row.GetPropertyHandle());
 
-			FDrawWeaponData data;
+			FDrawAnimation data;
 
 			int32 index = 0;
 			checkBoxes->CheckDefaultObject(index++, data.Montage);
 			checkBoxes->CheckDefaultValue(index++, data.PlayRate);
-			checkBoxes->CheckDefaultValue(index++, data.bUseControllerRotate);
-		}*/
+			checkBoxes->CheckDefaultObject(index++, data.Sound);
+		}
 	}
 
-	// Skill Setting
+	// Attack Animation Setting
 	{
-		//IDetailCategoryBuilder& category = DetailBuilder.EditCategory("GlobalSkillDatas", FText::FromString("Global Skill Data"));
-		//IDetailPropertyRow& row = category.AddProperty("SkillDatas", type);
+		IDetailPropertyRow& row = category.AddProperty("AttackAnimation", type);
 
-		//if (bRefreshByCheckBoxes == false)
-		//{
-		//	// 스킬 배열에 들어있는 갯수 리턴받아오기
-		//	uint32 count = 0;
-		//	row.GetPropertyHandle()->GetNumChildren(count);
+		if (bRefreshByCheckBoxes == false)
+		{
+			// 스킬 배열에 들어있는 갯수 리턴받아오기
+			uint32 count = 0;
+			row.GetPropertyHandle()->GetNumChildren(count);
 
-		//	// 첫 등록시 체크박스 초기화
-		//	SJobSkillData::EmptyCheckBoxes();
+			// 첫 등록시 체크박스 초기화
+			SActionAttackData::EmptyCheckBoxes();
 
-		//	FSkillData data;
-		//	for (uint32 i = 0; i < count; i++)
-		//	{
-		//		// 스킬 배열 핸들 가져와서 각 자식 핸들 가져오기
-		//		TSharedPtr<IPropertyHandle> handle = row.GetPropertyHandle()->GetChildHandle(i);
+			FAttackAnimation data;
+			for (uint32 i = 0; i < count; i++)
+			{
+				// 스킬 배열 핸들 가져와서 각 자식 핸들 가져오기
+				TSharedPtr<IPropertyHandle> handle = row.GetPropertyHandle()->GetChildHandle(i);
 
-		//		// 어떤 핸들을 체크박스에 넣을지 전달
-		//		TSharedPtr<SAssetCheckBoxes> checkBoxes = SJobSkillData::AddCheckBoxes();
-		//		checkBoxes->AddProperties(handle);
+				// 어떤 핸들을 체크박스에 넣을지 전달
+				TSharedPtr<SAssetEditorCheckBoxes> checkBoxes = SActionAttackData::AddCheckBoxes();
+				checkBoxes->AddProperties(handle);
 
-		//		int32 index = 0;
-		//		checkBoxes->CheckDefaultValue(index++, data.DemandLevel);
-		//		checkBoxes->CheckDefaultValue(index++, data.Name);
-		//		checkBoxes->CheckDefaultValue(index++, data.Description);
-		//		checkBoxes->CheckDefaultValue(index++, data.Damage);
-		//		checkBoxes->CheckDefaultObject(index++, data.Montage);
-		//		checkBoxes->CheckDefaultValue(index++, data.PlayRate);
-		//		checkBoxes->CheckDefaultValue(index++, data.SkillCooltime);
-		//		checkBoxes->CheckDefaultValue(index++, data.IsRequireTarget);
-		//		checkBoxes->CheckDefaultObject(index++, data.Icon);
-		//		checkBoxes->CheckDefaultObject(index++, data.Effect);
-		//		checkBoxes->CheckDefaultValue(index++, data.EffectLocation);
-		//		checkBoxes->CheckDefaultValue(index++, data.EffectScale);
-		//	}
-		//} // if
+				int32 index = 0;
+				checkBoxes->CheckDefaultValue(index++, data.Name);
+				checkBoxes->CheckDefaultValue(index++, data.Description);
+				checkBoxes->CheckDefaultValue(index++, data.Damage);
+				checkBoxes->CheckDefaultObject(index++, data.Montage);
+				checkBoxes->CheckDefaultObject(index++, data.Sound);
+				checkBoxes->CheckDefaultValue(index++, data.PlayRate);
+				checkBoxes->CheckDefaultObject(index++, data.Icon);
+				checkBoxes->CheckDefaultObject(index++, data.Effect);
+				checkBoxes->CheckDefaultValue(index++, data.EffectLocation);
+				checkBoxes->CheckDefaultValue(index++, data.EffectScale);
+			}
+		} // if
 	}
 
-	// HitData Setting
+	// Hit Animation Setting
 	{
-		//IDetailCategoryBuilder& category = DetailBuilder.EditCategory("HitData", FText::FromString("Hit Data"));
-		//IDetailPropertyRow& row = category.AddProperty("HitDatas", type);
+		IDetailPropertyRow& row = category.AddProperty("Hit Animtaion", type);
 
-		//if (bRefreshByCheckBoxes == false)
-		//{
-		//	// 스킬 배열에 들어있는 갯수 리턴받아오기
-		//	uint32 count = 0;
-		//	row.GetPropertyHandle()->GetNumChildren(count);
+		if (bRefreshByCheckBoxes == false)
+		{
+			// 스킬 배열에 들어있는 갯수 리턴받아오기
+			uint32 count = 0;
+			row.GetPropertyHandle()->GetNumChildren(count);
 
-		//	// 첫 등록시 체크박스 초기화
-		//	SJobSkillDamageData::EmptyCheckBoxes();
+			// 첫 등록시 체크박스 초기화
+			SAssetHitData::EmptyCheckBoxes();
 
-		//	FSkillDamageData data;
-		//	for (uint32 i = 0; i < count; i++)
-		//	{
-		//		// 스킬 배열 핸들 가져와서 각 자식 핸들 가져오기
-		//		TSharedPtr<IPropertyHandle> handle = row.GetPropertyHandle()->GetChildHandle(i);
+			FHitAnimation data;
+			for (uint32 i = 0; i < count; i++)
+			{
+				// 스킬 배열 핸들 가져와서 각 자식 핸들 가져오기
+				TSharedPtr<IPropertyHandle> handle = row.GetPropertyHandle()->GetChildHandle(i);
 
-		//		// 어떤 핸들을 체크박스에 넣을지 전달
-		//		TSharedPtr<SAssetCheckBoxes> checkBoxes = SJobSkillDamageData::AddCheckBoxes();
-		//		checkBoxes->AddProperties(handle);
+				// 어떤 핸들을 체크박스에 넣을지 전달
+				TSharedPtr<SAssetEditorCheckBoxes> checkBoxes = SAssetHitData::AddCheckBoxes();
+				checkBoxes->AddProperties(handle);
 
-		//		int32 index = 0;
-		//		checkBoxes->CheckDefaultValue(index++, data.PlayRate);
-		//		//checkBoxes->CheckDefaultObject(index++, data.Sound);
-		//		checkBoxes->CheckDefaultObject(index++, data.Effect);
-		//		checkBoxes->CheckDefaultValue(index++, data.EffectLocation);
-		//		checkBoxes->CheckDefaultValue(index++, data.EffectScale);
-		//	}
-		//} // if
+				int32 index = 0;
+				checkBoxes->CheckDefaultValue(index++, data.PlayRate);
+				checkBoxes->CheckDefaultObject(index++, data.Sound);
+				checkBoxes->CheckDefaultObject(index++, data.Effect);
+				checkBoxes->CheckDefaultValue(index++, data.EffectLocation);
+				checkBoxes->CheckDefaultValue(index++, data.EffectScale);
+			}
+		} // if
 	}
 }

@@ -16,6 +16,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float PlayRate = 1;
 
+	UPROPERTY(EditAnywhere)
+	class USoundWave* Sound;
+
 	/*UPROPERTY(EditAnywhere)
 	bool bUseControllerRotate = true;*/
 };
@@ -37,6 +40,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	class UAnimMontage* Montage;
+
+	UPROPERTY(EditAnywhere)
+	class USoundWave* Sound;
 
 	UPROPERTY(EditAnywhere)
 	float PlayRate = 1.0f;

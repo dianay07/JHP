@@ -8,6 +8,8 @@
 #include "IDetailChildrenBuilder.h"
 #include "DetailWidgetRow.h"
 #include "Animation/AnimMontage.h"
+#include "Particles/ParticleSystem.h"
+#include "Sound/SoundWave.h"
 
 void SAssetEditorCheckBoxes::AddProperties(TSharedPtr<IPropertyHandle> InHandle)
 {
@@ -116,6 +118,15 @@ void SAssetEditorCheckBoxes::CheckDefaultObject(int32 InIndex, UObject* InValue)
         InternalDatas[InIndex].bChecked = true;
 }
 
+void SAssetEditorCheckBoxes::CheckDefaultObject(int32 InIndex, const UAnimMontage* InValue)
+{
+    UObject* val = nullptr;
+    InternalDatas[InIndex].Handle->GetValue(val);
+
+    if (InValue != Cast<UAnimMontage>(val))
+        InternalDatas[InIndex].bChecked = true;
+}
+
 void SAssetEditorCheckBoxes::CheckDefaultValue(int32 InIndex, int InValue)
 {
     int val = 0;
@@ -158,5 +169,32 @@ void SAssetEditorCheckBoxes::CheckDefaultValue(int32 InIndex, uint8 InValue)
     InternalDatas[InIndex].Handle->GetValue(Type);
 
     if (InValue != Type)
+        InternalDatas[InIndex].bChecked = true;
+}
+
+void SAssetEditorCheckBoxes::CheckDefaultObject(int32 InIndex, UFXSystemAsset* InValue)
+{
+    UObject* val = nullptr;
+    InternalDatas[InIndex].Handle->GetValue(val);
+
+    if (val != nullptr && InValue != Cast<UFXSystemAsset>(val))
+        InternalDatas[InIndex].bChecked = true;
+}
+
+void SAssetEditorCheckBoxes::CheckDefaultObject(int32 InIndex, USoundWave* InValue)
+{
+    UObject* val = nullptr;
+    InternalDatas[InIndex].Handle->GetValue(val);
+
+    if (val != nullptr && InValue != Cast<USoundWave>(val))
+        InternalDatas[InIndex].bChecked = true;
+}
+
+void SAssetEditorCheckBoxes::CheckDefaultValue(int32 InIndex, const FText& InValue)
+{
+    FText val = FText::FromString("");
+    InternalDatas[InIndex].Handle->GetValue(val);
+
+    if (InValue.CompareTo(val) == false)
         InternalDatas[InIndex].bChecked = true;
 }

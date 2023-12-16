@@ -10,6 +10,8 @@ IMPLEMENT_MODULE(FActionAssetPluginModule, ActionAssetPlugin)
 
 void FActionAssetPluginModule::StartupModule()
 {
+	FActionAssetPluginStyle::Get();
+
 	IAssetTools& assetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
 	EAssetTypeCategories::Type categories = assetTools.RegisterAdvancedAssetCategory("ActionAsset", FText::FromString("JH Custom Menu"));
 

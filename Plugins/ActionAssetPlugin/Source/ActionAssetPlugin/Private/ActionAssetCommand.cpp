@@ -1,7 +1,9 @@
 #include "ActionAssetCommand.h"
 
+#include "ActionAssetEditorWindow.h"
 #include "ActionAssetPluginStyle.h"
 #include "EditorStyleSet.h"
+#include "ToolMenus.h"
 #include "LevelEditor.h"
 
 FActionAssetCommand::FActionAssetCommand()
@@ -17,6 +19,9 @@ FActionAssetCommand::~FActionAssetCommand()
 
 	if (Extender.IsValid())
 		Extender.Reset();
+
+	UToolMenus::UnRegisterStartupCallback(this);
+	UToolMenus::UnregisterOwner(this);
 }
 
 void FActionAssetCommand::Startup()
@@ -26,7 +31,7 @@ void FActionAssetCommand::Startup()
 	Extender = MakeShareable(new FExtender());
 
 	FToolBarExtensionDelegate toolbar = FToolBarExtensionDelegate::CreateRaw(this, &FActionAssetCommand::AddToolBar);
-	Extender->AddToolBarExtension("ActionAsset", EExtensionHook::After, Command, toolbar);//Settings, PluginTools, Contents
+	Extender->AddToolBarExtension("Contents", EExtensionHook::After, Command, toolbar);//Settings, PluginTools, Contents
 
 	FLevelEditorModule& levelEditor = FModuleManager::LoadModuleChecked<FLevelEditorModule>("LevelEditor");
 	levelEditor.GetToolBarExtensibilityManager()->AddExtender(Extender);
@@ -38,11 +43,12 @@ void FActionAssetCommand::RegisterCommands()
 	UI_COMMAND(Id, "ActionAsset", "", EUserInterfaceActionType::Button, FInputChord());
 #undef LOCTEXT_NAMESPACE
 
+	Command->MapAction(
+		Id,
+		FExecuteAction::CreateRaw(this, &FActionAssetCommand::OnClicked),
+		FCanExecuteAction());
 
-	FExecuteAction action;
-	action.BindRaw(this, &FActionAssetCommand::OnClicked);
-
-	Command->MapAction(Id, action, FCanExecuteAction());
+	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FActionAssetCommand::RegisterMenu));
 }
 
 void FActionAssetCommand::AddToolBar(FToolBarBuilder& InBuilder)
@@ -53,7 +59,32 @@ void FActionAssetCommand::AddToolBar(FToolBarBuilder& InBuilder)
 	InBuilder.AddToolBarButton(Id, NAME_None, FText::FromString(name), FText::FromString("Action Asset Editor"), FActionAssetPluginStyle::Get()->ToolBar_Icon, NAME_None);
 }
 
+void FActionAssetCommand::RegisterMenu()
+{
+	// Owner will be used for cleanup in call to UToolMenus::UnregisterOwner
+	FToolMenuOwnerScoped OwnerScoped(this);
+
+	{
+		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.MainMenu.Window");
+		{
+			FToolMenuSection& Section = Menu->FindOrAddSection("WindowLayout");
+			Section.AddMenuEntryWithCommandList(Id, Command);
+		}
+	}
+
+	{
+		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.PlayToolBar");
+		{
+			FToolMenuSection& Section = ToolbarMenu->FindOrAddSection("PluginTools");
+			{
+				FToolMenuEntry& Entry = Section.AddEntry(FToolMenuEntry::InitToolBarButton(Id));
+				Entry.SetCommandList(Command);
+			}
+		}
+	}
+}
+
 void FActionAssetCommand::OnClicked()
 {
-	//FWeaponAssetEditor::OpenWindow();
+	FActionAssetEditorWindow::OpenWindow();
 }

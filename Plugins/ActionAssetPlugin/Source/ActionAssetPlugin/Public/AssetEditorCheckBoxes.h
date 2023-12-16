@@ -22,11 +22,15 @@ public:
 
 public:
 	void CheckDefaultObject(int32 InIndex, UObject* InValue);
+	void CheckDefaultObject(int32 InIndex, const UAnimMontage* InValue);
 	void CheckDefaultValue(int32 InIndex, int InValue);
 	void CheckDefaultValue(int32 InIndex, float InValue);
 	void CheckDefaultValue(int32 InIndex, bool InValue);
 	void CheckDefaultValue(int32 InIndex, const FVector& InValue);
+	void CheckDefaultValue(int32 InIndex, const FText& InValue);
 	void CheckDefaultValue(int32 InIndex, uint8 InValue);
+	void CheckDefaultObject(int32 InIndex, class UFXSystemAsset* InValue);
+	void CheckDefaultObject(int32 InIndex, class USoundWave* InValue);
 
 private:
 	struct FInternalData
