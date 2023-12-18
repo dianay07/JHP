@@ -6,10 +6,29 @@
 
 class AJHPCharacter;
 
+UENUM()
+enum class EStateType : uint8
+{
+	Idle = 0, Evade, Hitted, Dead, Action, Max,
+};
+
+DECLARE_DELEGATE_TwoParams(FStateTypeChanged, EStateType, EStateType);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class JHP_API UStateComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+public:
+	FORCEINLINE bool IsIdleMode() { return Type == EStateType::Idle; }
+	FORCEINLINE bool IsEvadeMode() { return Type == EStateType::Evade; }
+	FORCEINLINE bool IsHittedMode() { return Type == EStateType::Hitted; }
+	FORCEINLINE bool IsDeadMode() { return Type == EStateType::Dead; }
+	FORCEINLINE bool IsActionMode() { return Type == EStateType::Action; }
+
+	EStateType GetType() { return Type; }
+
+	FORCEINLINE bool IsInBattle() { return InBattle; }
 
 public:
 	UPROPERTY(BlueprintReadOnly)
@@ -21,12 +40,23 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+public:
+	void SetStateIdle();
+	void SetStateEvade();
+	void SetStateHitted();
+	void SetStateDead();
+	void SetStateAction();
 	void SetInBattle(bool Input);
-	FORCEINLINE bool GetInBattle() const { return InBattle; }
+
+private:
+	UFUNCTION()
+	void ChangeType(EStateType InType);
+
+public:
+	FStateTypeChanged OnStateTypeChanged;
 
 private:
 	TObjectPtr<AJHPCharacter> OwnerCharacter;
+
+	EStateType Type;
 };

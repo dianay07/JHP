@@ -1,18 +1,16 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "JHPCharacter.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Component/JobComponent.h"
+#include "Component/StateComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "Component/StateComponent.h"
-
-
-// TODO :: ANIMBLUEPRINT bool ¼³Á¤
 
 //////////////////////////////////////////////////////////////////////////
 // AJHPCharacter
@@ -45,6 +43,7 @@ AJHPCharacter::AJHPCharacter()
 	CameraComponent->bUsePawnControlRotation = false;
 
 	StateComponent = CreateDefaultSubobject<UStateComponent>(TEXT("State Component"));
+	Job = CreateDefaultSubobject<UJobComponent>(TEXT("Job Component"));
 }
 
 void AJHPCharacter::ControlCamera(bool Input)
@@ -72,6 +71,8 @@ void AJHPCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	Job->ChangeJob(EJob::Warrior);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -122,14 +123,16 @@ void AJHPCharacter::Look(const FInputActionValue& Value)
 
 void AJHPCharacter::Attack()
 {
-	if (GetStateComponent()->InBattle == true)
-	{
-		GetStateComponent()->SetInBattle(false);
-		ControlCamera(false);
-	}
-	else
+	if (GetStateComponent()->InBattle == false)
 	{
 		GetStateComponent()->SetInBattle(true);
 		ControlCamera(true);
+
+		Job->PlayEquipAnimation();
+	}
+	else
+	{
+		// TEST
+		Job->PlayAttackAnimation(1);
 	}
 }

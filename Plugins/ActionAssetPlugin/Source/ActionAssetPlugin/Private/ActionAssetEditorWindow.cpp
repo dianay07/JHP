@@ -1,7 +1,7 @@
 #include "ActionAssetEditorWindow.h"
 
 #include "ActionAttackData.h"
-#include "ActionDrawData.h"
+#include "ActionEquipData.h"
 #include "Subsystems/AssetEditorSubsystem.h"
 #include "AssetEditorDetailView.h"
 #include "ActionHitData.h"
@@ -79,7 +79,7 @@ void FActionAssetEditorWindow::Open(FString InAssetName)
 	// Draw Animation
 	{
 		FOnGetPropertyTypeCustomizationInstance instance;
-		instance.BindStatic(&SActionDrawData::MakeInstance);
+		instance.BindStatic(&SActionEquipData::MakeInstance);
 		prop.RegisterCustomPropertyTypeLayout("Draw Animation", instance);
 	}
 

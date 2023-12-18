@@ -4,14 +4,23 @@
 #include "Engine/DamageEvents.h"
 #include "ActionDataStructure.generated.h"
 
+UENUM(BlueprintType)
+enum class EJob : uint8
+{
+	Warrior, Dragoon, Max
+};
+
 USTRUCT()
-struct FDrawAnimation			
+struct FEquipAnimation			
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere)
-	class UAnimMontage* Montage;
+	class UAnimMontage* DrawMontage;
+
+	UPROPERTY(EditAnywhere)
+	class UAnimMontage* UnEquipMontage;
 
 	UPROPERTY(EditAnywhere)
 	float PlayRate = 1;
@@ -72,6 +81,9 @@ struct FHitAnimation
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere)
+	class UAnimMontage* Montage;
+
 	UPROPERTY(EditAnywhere)
 	float PlayRate = 0.0f;
 

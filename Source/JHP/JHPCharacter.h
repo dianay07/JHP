@@ -7,6 +7,11 @@
 #include "InputActionValue.h"
 #include "JHPCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+class UStateComponent;
+class UJobComponent;
+
 UCLASS(config=Game)
 class AJHPCharacter : public ACharacter
 {
@@ -14,15 +19,25 @@ class AJHPCharacter : public ACharacter
 
 	/* Component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* SpringArmComponent;
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* CameraComponent;
+	TObjectPtr<UCameraComponent> CameraComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UStateComponent* StateComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStateComponent> StateComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Component, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UJobComponent> Job;
+
+public:
+	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return SpringArmComponent; }
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return CameraComponent; }
+	FORCEINLINE UStateComponent* GetStateComponent() const { return StateComponent; }
+	FORCEINLINE UJobComponent* GetJobComponent() const { return Job; }
 
 	/* Input */
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
@@ -37,11 +52,6 @@ class AJHPCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AttackAction;
-
-public:
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return SpringArmComponent; }
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return CameraComponent; }
-	FORCEINLINE UStateComponent* GetStateComponent() const { return StateComponent; }
 
 public:
 	AJHPCharacter();

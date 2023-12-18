@@ -1,12 +1,14 @@
 #include "AssetEditorDetailView.h"
 
 #include "ActionAttackData.h"
-#include "ActionDrawData.h"
+#include "ActionEquipData.h"
 #include "AssetEditorCheckBoxes.h"
 #include "ActionHitData.h"
 #include "DetailCategoryBuilder.h"
 #include "DetailLayoutBuilder.h"
 #include "ActionAssetPlugin/Data/ActionData.h"
+
+// TODO : 체크 박스 안나옴 ㅠ
 
 bool SAssetEditorDetailView::bRefreshByCheckBoxes = false;
 
@@ -29,13 +31,14 @@ void SAssetEditorDetailView::CustomizeDetails(IDetailLayoutBuilder& DetailBuilde
 
 		if(bRefreshByCheckBoxes == false)
 		{
-			TSharedPtr<SAssetEditorCheckBoxes> checkBoxes = SActionDrawData::CreateCheckBoxes();
+			TSharedPtr<SAssetEditorCheckBoxes> checkBoxes = SActionEquipData::CreateCheckBoxes();
 			checkBoxes->AddProperties(row.GetPropertyHandle());
 
-			FDrawAnimation data;
+			FEquipAnimation data;
 
 			int32 index = 0;
-			checkBoxes->CheckDefaultObject(index++, data.Montage);
+			checkBoxes->CheckDefaultObject(index++, data.DrawMontage);
+			checkBoxes->CheckDefaultObject(index++, data.UnEquipMontage);
 			checkBoxes->CheckDefaultValue(index++, data.PlayRate);
 			checkBoxes->CheckDefaultObject(index++, data.Sound);
 		}
@@ -105,6 +108,7 @@ void SAssetEditorDetailView::CustomizeDetails(IDetailLayoutBuilder& DetailBuilde
 				checkBoxes->AddProperties(handle);
 
 				int32 index = 0;
+				checkBoxes->CheckDefaultObject(index++, data.Montage);
 				checkBoxes->CheckDefaultValue(index++, data.PlayRate);
 				checkBoxes->CheckDefaultObject(index++, data.Sound);
 				checkBoxes->CheckDefaultObject(index++, data.Effect);
