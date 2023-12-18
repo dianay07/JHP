@@ -1,4 +1,4 @@
-#include "AssetHitData.h"
+#include "ActionHitData.h"
 
 #include "ActionAssetPluginStyle.h"
 #include "AssetEditorCheckBoxes.h"
@@ -6,14 +6,14 @@
 #include "IDetailChildrenBuilder.h"
 #include "IDetailPropertyRow.h"
 
-TArray<TSharedPtr<SAssetEditorCheckBoxes>> SAssetHitData::CheckBoxes;
+TArray<TSharedPtr<SAssetEditorCheckBoxes>> SActionHitData::CheckBoxes;
 
-TSharedRef<IPropertyTypeCustomization> SAssetHitData::MakeInstance()
+TSharedRef<IPropertyTypeCustomization> SActionHitData::MakeInstance()
 {
-	return MakeShareable(new SAssetHitData());
+	return MakeShareable(new SActionHitData());
 }
 
-TSharedPtr<SAssetEditorCheckBoxes> SAssetHitData::AddCheckBoxes()
+TSharedPtr<SAssetEditorCheckBoxes> SActionHitData::AddCheckBoxes()
 {
 	TSharedPtr<SAssetEditorCheckBoxes> checkBoxes = MakeShareable(new SAssetEditorCheckBoxes());
 	int32 index = CheckBoxes.Add(checkBoxes);
@@ -21,7 +21,7 @@ TSharedPtr<SAssetEditorCheckBoxes> SAssetHitData::AddCheckBoxes()
 	return CheckBoxes[index];
 }
 
-void SAssetHitData::EmptyCheckBoxes()
+void SActionHitData::EmptyCheckBoxes()
 {
 	for (TSharedPtr<SAssetEditorCheckBoxes> ptr : CheckBoxes)
 	{
@@ -32,7 +32,7 @@ void SAssetHitData::EmptyCheckBoxes()
 	CheckBoxes.Empty();
 }
 
-void SAssetHitData::CustomizeHeader(TSharedRef<IPropertyHandle> InPropertyHandle, FDetailWidgetRow& InHeaderRow, IPropertyTypeCustomizationUtils& InCustomizationUtils)
+void SActionHitData::CustomizeHeader(TSharedRef<IPropertyHandle> InPropertyHandle, FDetailWidgetRow& InHeaderRow, IPropertyTypeCustomizationUtils& InCustomizationUtils)
 {
 	if (SAssetEditorCheckBoxes::CanDraw(InPropertyHandle, CheckBoxes.Num()) == false)
 	{
@@ -75,7 +75,7 @@ void SAssetHitData::CustomizeHeader(TSharedRef<IPropertyHandle> InPropertyHandle
 		];
 }
 
-void SAssetHitData::CustomizeChildren(TSharedRef<IPropertyHandle> InPropertyHandle, IDetailChildrenBuilder& InChildBuilder, IPropertyTypeCustomizationUtils& InCustomizationUtils)
+void SActionHitData::CustomizeChildren(TSharedRef<IPropertyHandle> InPropertyHandle, IDetailChildrenBuilder& InChildBuilder, IPropertyTypeCustomizationUtils& InCustomizationUtils)
 {
 	if (SAssetEditorCheckBoxes::CanDraw(InPropertyHandle, CheckBoxes.Num()) == false)
 	{

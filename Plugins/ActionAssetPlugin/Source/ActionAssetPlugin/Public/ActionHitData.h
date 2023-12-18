@@ -5,7 +5,7 @@
 
 class SAssetEditorCheckBoxes;
 
-class ACTIONASSETPLUGIN_API SAssetHitData
+class ACTIONASSETPLUGIN_API SActionHitData
 	: public IPropertyTypeCustomization
 {
 public:

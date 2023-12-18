@@ -3,7 +3,7 @@
 #include "ActionAttackData.h"
 #include "ActionDrawData.h"
 #include "AssetEditorCheckBoxes.h"
-#include "AssetHitData.h"
+#include "ActionHitData.h"
 #include "DetailCategoryBuilder.h"
 #include "DetailLayoutBuilder.h"
 #include "ActionAssetPlugin/Data/ActionData.h"
@@ -21,9 +21,10 @@ void SAssetEditorDetailView::CustomizeDetails(IDetailLayoutBuilder& DetailBuilde
 
 	DetailBuilder.HideCategory("ActionData");
 
-	IDetailCategoryBuilder& category = DetailBuilder.EditCategory("Asset", FText::FromString("Action Data"));
+	
 	// DrawAnimation Setting
 	{
+		IDetailCategoryBuilder& category = DetailBuilder.EditCategory("Draw", FText::FromString("Draw"));
 		IDetailPropertyRow& row = category.AddProperty("DrawAnimation", type);
 
 		if(bRefreshByCheckBoxes == false)
@@ -42,7 +43,8 @@ void SAssetEditorDetailView::CustomizeDetails(IDetailLayoutBuilder& DetailBuilde
 
 	// Attack Animation Setting
 	{
-		IDetailPropertyRow& row = category.AddProperty("AttackAnimation", type);
+		IDetailCategoryBuilder& category = DetailBuilder.EditCategory("Attack", FText::FromString("Attack"));
+		IDetailPropertyRow& row = category.AddProperty("AttackAnimations", type);
 
 		if (bRefreshByCheckBoxes == false)
 		{
@@ -80,7 +82,8 @@ void SAssetEditorDetailView::CustomizeDetails(IDetailLayoutBuilder& DetailBuilde
 
 	// Hit Animation Setting
 	{
-		IDetailPropertyRow& row = category.AddProperty("Hit Animtaion", type);
+		IDetailCategoryBuilder& category = DetailBuilder.EditCategory("Hit", FText::FromString("Hit"));
+		IDetailPropertyRow& row = category.AddProperty("HitAnimations", type);
 
 		if (bRefreshByCheckBoxes == false)
 		{
@@ -89,7 +92,7 @@ void SAssetEditorDetailView::CustomizeDetails(IDetailLayoutBuilder& DetailBuilde
 			row.GetPropertyHandle()->GetNumChildren(count);
 
 			// 첫 등록시 체크박스 초기화
-			SAssetHitData::EmptyCheckBoxes();
+			SActionHitData::EmptyCheckBoxes();
 
 			FHitAnimation data;
 			for (uint32 i = 0; i < count; i++)
@@ -98,7 +101,7 @@ void SAssetEditorDetailView::CustomizeDetails(IDetailLayoutBuilder& DetailBuilde
 				TSharedPtr<IPropertyHandle> handle = row.GetPropertyHandle()->GetChildHandle(i);
 
 				// 어떤 핸들을 체크박스에 넣을지 전달
-				TSharedPtr<SAssetEditorCheckBoxes> checkBoxes = SAssetHitData::AddCheckBoxes();
+				TSharedPtr<SAssetEditorCheckBoxes> checkBoxes = SActionHitData::AddCheckBoxes();
 				checkBoxes->AddProperties(handle);
 
 				int32 index = 0;

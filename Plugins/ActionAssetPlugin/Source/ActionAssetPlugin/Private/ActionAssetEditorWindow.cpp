@@ -1,8 +1,10 @@
 #include "ActionAssetEditorWindow.h"
 
+#include "ActionAttackData.h"
 #include "ActionDrawData.h"
 #include "Subsystems/AssetEditorSubsystem.h"
 #include "AssetEditorDetailView.h"
+#include "ActionHitData.h"
 #include "ActionAssetPlugin/Data/ActionData.h"
 
 const FName FActionAssetEditorWindow::EditorName = "AssetEditorWindow";
@@ -42,7 +44,7 @@ void FActionAssetEditorWindow::OpenWindow(FString InAssetName)
 
 void FActionAssetEditorWindow::Shutdown()
 {
-	if (Instance.IsValid())
+	if (Instance.IsValid() == true)
 	{
 		Instance->CloseWindow();
 
@@ -78,35 +80,34 @@ void FActionAssetEditorWindow::Open(FString InAssetName)
 	{
 		FOnGetPropertyTypeCustomizationInstance instance;
 		instance.BindStatic(&SActionDrawData::MakeInstance);
-		prop.RegisterCustomPropertyTypeLayout("DrawData", instance);
+		prop.RegisterCustomPropertyTypeLayout("Draw Animation", instance);
 	}
 
-	//// SkillData
-	//{
-	//	FOnGetPropertyTypeCustomizationInstance instance;
-	//	instance.BindStatic(&SJobSkillData::MakeInstance);
-	//	prop.RegisterCustomPropertyTypeLayout("SkillData", instance);
-	//}
+	//// Attack Animation
+	{
+		FOnGetPropertyTypeCustomizationInstance instance;
+		instance.BindStatic(&SActionAttackData::MakeInstance);
+		prop.RegisterCustomPropertyTypeLayout("Attack Animation", instance);
+	}
 
-	//// HitData
-	//{
-	//	FOnGetPropertyTypeCustomizationInstance instance;
-	//	instance.BindStatic(&SJobSkillDamageData::MakeInstance);
-	//	prop.RegisterCustomPropertyTypeLayout("SkillDamageData", instance);
-	//}
-
+	//// Hit Animation
+	{
+		FOnGetPropertyTypeCustomizationInstance instance;
+		instance.BindStatic(&SActionHitData::MakeInstance);
+		prop.RegisterCustomPropertyTypeLayout("Hit Animation", instance);
+	}
 
 	TSharedRef<FTabManager::FLayout> layout = FTabManager::NewLayout("ActionAssetEditorWindow_Layout")
 		->AddArea
 		(
 			FTabManager::NewPrimaryArea()->SetOrientation(Orient_Vertical)
-			->Split
-			(
-				// 고정공간
-				FTabManager::NewStack()
-				->SetSizeCoefficient(0.1f)
-				->AddTab(FName("TEST"), ETabState::OpenedTab)
-			)
+			//->Split
+			//(
+			//	// 고정공간
+			//	FTabManager::NewStack()
+			//	->SetSizeCoefficient(0.1f)
+			//	->AddTab(FName("TEST"), ETabState::OpenedTab)
+			//)
 			->Split
 			(
 				// 가변공간
@@ -137,7 +138,7 @@ void FActionAssetEditorWindow::Open(FString InAssetName)
 		if (LeftArea->SelectedRowDataPtrName() == InAssetName)
 			return;
 
-		if (ptr.IsValid())
+		if (ptr.IsValid() == true)
 			asset = ptr->Asset;
 	}
 
@@ -161,16 +162,16 @@ bool FActionAssetEditorWindow::OnRequestClose()
 		if (FModuleManager::Get().IsModuleLoaded("PropertyEditor"))
 		{
 			FPropertyEditorModule& prop = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-			prop.UnregisterCustomPropertyTypeLayout("DrawData");
-			//prop.UnregisterCustomPropertyTypeLayout("SkillData");
-			//prop.UnregisterCustomPropertyTypeLayout("SkillDamageData");
+			prop.UnregisterCustomPropertyTypeLayout("Draw Animation");
+			prop.UnregisterCustomPropertyTypeLayout("Attack Animation");
+			prop.UnregisterCustomPropertyTypeLayout("Hit Animation");
 		}
 	}
 
-	if (LeftArea.IsValid())
+	if (LeftArea.IsValid() == true)
 		LeftArea.Reset();
 
-	if (DetailsView.IsValid())
+	if (DetailsView.IsValid() == true)
 		DetailsView.Reset();
 
 	return true;
