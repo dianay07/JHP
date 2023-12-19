@@ -1,6 +1,6 @@
 #include "StateComponent.h"
 
-#include "JHP/JHPCharacter.h"
+#include "JHP/Character/JHPCharacter.h"
 
 UStateComponent::UStateComponent()
 {
