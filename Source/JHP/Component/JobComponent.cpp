@@ -1,5 +1,7 @@
 #include "JobComponent.h"
+#include "JobComponent.h"
 
+#include "JHP/Character/JHPCharacter.h"
 #include "ActionAssetPlugin/Data/ActionData.h"
 #include "GameFramework/Character.h"
 
@@ -77,7 +79,10 @@ void UJobComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OwnerCharacter = Cast<ACharacter>(GetOwner());
+	OwnerCharacter = Cast<AJHPCharacter>(GetOwner());
+	// Notify·Î °³¼±
+	OwnerCharacter->OnEnterBattleCommand.AddUObject(this, &UJobComponent::PlayEquipAnimation);
+	OwnerCharacter->OnPlayAttackMontage.AddUObject(this, &UJobComponent::PlayAttackAnimation);
 }
 
 void UJobComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

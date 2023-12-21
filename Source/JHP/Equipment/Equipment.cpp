@@ -12,6 +12,8 @@
 void AEquipment::AttachTo(FName InSocketName)
 {
 	// 주인될 캐릭터의 매쉬 찾아 스켈레톤에 있는 무기 포켓에 지정
+	if (OwnerCharacter == nullptr) return;
+
 	AttachToComponent(OwnerCharacter->GetMesh(), 
 		FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), InSocketName);
 }
@@ -75,14 +77,14 @@ void AEquipment::OnCollision()
 	{
 		shape->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-		if(shape->GetCollisionEnabled() == ECollisionEnabled::NoCollision)
+		/*if(shape->GetCollisionEnabled() == ECollisionEnabled::NoCollision)
 		{
 			UE_LOG(LogTemp, Error, TEXT("TRUE"));
 		}
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("FALSE"));
-		}
+		}*/
 	}
 		
 }
@@ -96,14 +98,14 @@ void AEquipment::OffCollision()
 	{
 		shape->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		if (shape->GetCollisionEnabled() == ECollisionEnabled::NoCollision)
+		/*if (shape->GetCollisionEnabled() == ECollisionEnabled::NoCollision)
 		{
 			UE_LOG(LogTemp, Error, TEXT("%s Collisiton Setting : TRUE"), *shape->GetName());
 		}
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("%s Collisiton Setting : FALSE"), *shape->GetName());
-		}
+		}*/
 	}
 }
 

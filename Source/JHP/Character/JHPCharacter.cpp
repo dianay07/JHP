@@ -127,14 +127,11 @@ void AJHPCharacter::Attack()
 {
 	if (GetStateComponent()->InBattle == false)
 	{
-		GetStateComponent()->SetInBattle(true);
+		OnEnterBattleCommand.Broadcast();
 		ControlCamera(true);
-
-		Job->PlayEquipAnimation();
 	}
 	else
 	{
-		// TEST
-		Job->PlayAttackAnimation(1);
+		OnPlayAttackMontage.Broadcast(0);
 	}
 }

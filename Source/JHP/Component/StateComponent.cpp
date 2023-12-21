@@ -12,6 +12,7 @@ void UStateComponent::BeginPlay()
 	Super::BeginPlay();
 
 	OwnerCharacter = Cast<AJHPCharacter>(GetOwner());
+	OwnerCharacter->OnEnterBattleCommand.AddUObject(this, &UStateComponent::SetInBattleTrue);
 }
 
 void UStateComponent::SetStateIdle()
@@ -39,14 +40,14 @@ void UStateComponent::SetStateAction()
 	ChangeType(EStateType::Action);
 }
 
-void UStateComponent::SetInBattle(bool Input)
+void UStateComponent::SetInBattleTrue()
 {
-	InBattle = Input;
+	InBattle = true;
+}
 
-	if (Input == true)
-		SetStateAction();
-	else
-		SetStateIdle();
+void UStateComponent::SetInBattleFalse()
+{
+	InBattle = false;
 }
 
 void UStateComponent::ChangeType(EStateType InType)

@@ -13,6 +13,9 @@ class UStateComponent;
 class UJobComponent;
 class UEquipComponent;
 
+DECLARE_MULTICAST_DELEGATE(FOnEnterBattleCommandDelegate);	// 전투 상태 변경
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayAttackMontage, int32);
+
 UCLASS(config=Game)
 class AJHPCharacter : public ACharacter
 {
@@ -66,6 +69,12 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Attack();
+
+public:
+	// 장착 관련
+	FOnEnterBattleCommandDelegate OnEnterBattleCommand;
+	// 공격 관련
+	FOnPlayAttackMontage OnPlayAttackMontage;
 
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

@@ -46,7 +46,9 @@ public:
 	void SetStateHitted();
 	void SetStateDead();
 	void SetStateAction();
-	void SetInBattle(bool Input);
+
+	void SetInBattleTrue();
+	void SetInBattleFalse();
 
 private:
 	UFUNCTION()
