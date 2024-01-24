@@ -20,6 +20,13 @@ void UCharacterNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBas
 		return;
 	}
 
+	JobComponent = Cast<UJobComponent>(character->GetComponentByClass(UJobComponent::StaticClass()));
+	if (JobComponent == nullptr)
+	{
+		UE_LOG(LOG_ANIMNOTIFY, Log, TEXT("Notify : JobComponent is NULL"));
+		return;
+	}
+
 	EquipComponent = Cast<UEquipComponent>(character->GetComponentByClass(UEquipComponent::StaticClass()));
 	if(EquipComponent == nullptr)
 	{

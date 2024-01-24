@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "JHP/Component/StateComponent.h"
 #include "JHPCharacter.generated.h"
 
 class USpringArmComponent;
@@ -42,6 +43,7 @@ public:
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return CameraComponent; }
 	FORCEINLINE UStateComponent* GetStateComponent() const { return StateComponent; }
 	FORCEINLINE UJobComponent* GetJobComponent() const { return Job; }
+	FORCEINLINE UAnimInstance* GetAnimInstance() const { return GetMesh()->GetAnimInstance(); }
 
 	/* Input */
 public:
@@ -60,6 +62,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AttackAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* GuardAction;
+
 public:
 	AJHPCharacter();
 
@@ -69,6 +74,12 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Attack();
+	void StartGuard();
+	void StopGuard();
+
+protected:
+	// State 관련
+	void StateTypeChanged(EStateType PrevType, EStateType InType);
 
 public:
 	// 장착 관련

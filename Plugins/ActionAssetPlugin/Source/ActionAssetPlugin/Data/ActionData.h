@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/DataAsset.h"
 #include "ActionAssetPlugin/Data/ActionDataStructure.h"
 #include "ActionData.generated.h"
 
@@ -19,6 +18,4 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<FHitAnimation> HitAnimations;
-
-public:
 };

@@ -13,5 +13,5 @@ void UAnimNotify_Equip::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	Super::Notify(MeshComp, Animation, EventReference);
 
 	if(EquipComponent != nullptr)
-		EquipComponent->Equip();
+		EquipComponent->EquipWeapon();
 }

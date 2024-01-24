@@ -15,10 +15,12 @@ class JHP_API UEquipComponent : public UActorComponent
 
 public:
 	UPROPERTY(EditAnywhere, Category = Equip)
-	TSubclassOf<AEquipment> EquipmentClass;
+	TSubclassOf<AEquipment> WeaponEquipmentClass;
 
 	UPROPERTY(EditAnywhere, Category = Equip)
 	AEquipment* WeaponSlot;
+
+	FORCEINLINE AEquipment* GetWeaponEquipment() { return WeaponSlot; }
 
 	UPROPERTY(EditAnywhere, Category = Equip)
 	TArray<AEquipment*> ArmorSlots;
@@ -28,8 +30,8 @@ public:
 
 	void RefreshEquipmentInfo();
 
-	void Equip();
-	void UnEquip();
+	void EquipWeapon();
+	void UnEquipWeapon();
 
 protected:
 	virtual void BeginPlay() override;

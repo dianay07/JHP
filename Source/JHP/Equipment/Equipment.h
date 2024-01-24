@@ -4,11 +4,10 @@
 #include "GameFramework/Actor.h"
 #include "Equipment.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FAttachmentBeginCollision);
-DECLARE_MULTICAST_DELEGATE(FAttachmentEndCollision);
+DECLARE_MULTICAST_DELEGATE(FEquipmentBeginCollision);
+DECLARE_MULTICAST_DELEGATE(FEquipmentEndCollision);
 
-DECLARE_MULTICAST_DELEGATE_ThreeParams(FAttachmentBeginOverlap, class ACharacter*, AActor*, class ACharacter*);
-DECLARE_MULTICAST_DELEGATE_TwoParams(FAttachmentEndOverlap, class ACharacter*, class ACharacter*);
+
 
 UCLASS()
 class JHP_API AEquipment : public AActor
@@ -25,7 +24,7 @@ protected:
 public:
 	// UFUNCTION Á¦°Å ??
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
-	void AttachTo(FName InSocketName);
+	void AttachTo(USkeletalMeshComponent* Mesh,FName InSocketName);
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
 	void AttachToCollision(FName InCollisionName);
@@ -48,6 +47,12 @@ public:
 	void OnCollision();
 	void OffCollision();
 
+	//UFUNCTION()
+	//void OnCollision(UAnimMontage* InMontage);
+
+	//UFUNCTION()
+	//void OffCollision(UAnimMontage* InMontage, bool Interupt);
+
 private:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -56,15 +61,14 @@ private:
 	void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
-	FAttachmentBeginCollision OnAttachmentBeginCollision;
-	FAttachmentEndCollision OnAttachmentEndCollision;
-
-	FAttachmentBeginOverlap OnAttachmentBeginOverlap;
-	FAttachmentEndOverlap OnAttachmentEndOverlap;
+	FEquipmentBeginCollision OnEquipmentBeginCollision;
+	FEquipmentEndCollision OnEquipmentEndCollision;
 
 protected:
 	UPROPERTY()
 	ACharacter* OwnerCharacter;
+	class UJobComponent* JobComponent;
+
 	TArray<UShapeComponent*> Collisions;
 
 };
