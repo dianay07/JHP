@@ -28,13 +28,14 @@ class AJHPCharacter : public ACharacter
 	TObjectPtr<UStateComponent> StateComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Component, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UJobComponent> Job;
+	TObjectPtr<UJobComponent> JobComponent;
 
 public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return SpringArmComponent; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return CameraComponent; }
 	FORCEINLINE UStateComponent* GetStateComponent() const { return StateComponent; }
-	FORCEINLINE UJobComponent* GetJobComponent() const { return Job; }
+	FORCEINLINE UJobComponent* GetJobComponent() const { return JobComponent; }
+	FORCEINLINE UAnimInstance* GetAnimInstance() const { return GetMesh()->GetAnimInstance(); }
 
 	/* Input */
 public:

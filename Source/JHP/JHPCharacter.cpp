@@ -1,7 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "JHPCharacter.h"
+#include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystemInterface.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Component/JobComponent.h"
@@ -43,7 +45,15 @@ AJHPCharacter::AJHPCharacter()
 	CameraComponent->bUsePawnControlRotation = false;
 
 	StateComponent = CreateDefaultSubobject<UStateComponent>(TEXT("State Component"));
-	Job = CreateDefaultSubobject<UJobComponent>(TEXT("Job Component"));
+	JobComponent = CreateDefaultSubobject<UJobComponent>(TEXT("Job Component"));
+	EquipComponent = CreateDefaultSubobject<UEquipComponent>(TEXT("Equip Component"));
+
+	/* AnimInstance */
+	TSubclassOf<UAnimInstance> instance = ConstructorHelpers::FClassFinder<UAnimInstance>(TEXT("/Script/Engine.AnimBlueprint'/Game/01_Character/ABP_Character.ABP_Character_C'")).Class;
+	if(instance != nullptr)
+	{
+		GetMesh()->SetAnimClass(instance);
+	}
 }
 
 void AJHPCharacter::ControlCamera(bool Input)
@@ -72,7 +82,7 @@ void AJHPCharacter::BeginPlay()
 		}
 	}
 
-	Job->ChangeJob(EJob::Warrior);
+	JobComponent->ChangeJob(EJob::Warrior);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -90,6 +100,13 @@ void AJHPCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AJHPCharacter::Look);
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AJHPCharacter::Attack);
+
+		EnhancedInputComponent->BindAction(GuardAction, ETriggerEvent::Ongoing, this, &AJHPCharacter::StartGuard);
+		EnhancedInputComponent->BindAction(GuardAction, ETriggerEvent::Completed, this, &AJHPCharacter::StopGuard);
+
+		// 키 변경 코드 : InputAction 의 키가 그대로 바뀜
+		DefaultMappingContext->UnmapAllKeysFromAction(AttackAction);
+		DefaultMappingContext->MapKey(AttackAction, EKeys::T);
 	}
 }
 
