@@ -1,6 +1,7 @@
 #include "StateComponent.h"
 
-#include "JHP/JHPCharacter.h"
+#include "JHP/Character/EnemyBase.h"
+#include "JHP/Character/JHPCharacter.h"
 
 UStateComponent::UStateComponent()
 {
@@ -11,7 +12,16 @@ void UStateComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OwnerCharacter = Cast<AJHPCharacter>(GetOwner());
+	OwnerCharacter = Cast<ACharacter>(GetOwner());
+
+	if (Cast<AJHPCharacter>(OwnerCharacter))
+	{
+		Cast<AJHPCharacter>(OwnerCharacter)->OnEnterBattleCommand.AddUObject(this, &UStateComponent::SetInBattleTrue);
+	}
+	else if(Cast<AEnemyBase>(OwnerCharacter))
+	{
+		
+	}
 }
 
 void UStateComponent::SetStateIdle()
@@ -39,14 +49,19 @@ void UStateComponent::SetStateAction()
 	ChangeType(EStateType::Action);
 }
 
-void UStateComponent::SetInBattle(bool Input)
+void UStateComponent::SetStateGuard()
 {
-	InBattle = Input;
+	ChangeType(EStateType::Guard);
+}
 
-	if (Input == true)
-		SetStateAction();
-	else
-		SetStateIdle();
+void UStateComponent::SetInBattleTrue()
+{
+	InBattle = true;
+}
+
+void UStateComponent::SetInBattleFalse()
+{
+	InBattle = false;
 }
 
 void UStateComponent::ChangeType(EStateType InType)

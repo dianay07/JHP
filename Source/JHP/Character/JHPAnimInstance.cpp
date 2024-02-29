@@ -1,6 +1,6 @@
 #include "JHPAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "JHP/JHPCharacter.h"
+#include "JHP/Character/JHPCharacter.h"
 #include "JHP/Component/StateComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
