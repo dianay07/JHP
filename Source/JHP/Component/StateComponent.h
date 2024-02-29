@@ -9,7 +9,7 @@ class AJHPCharacter;
 UENUM()
 enum class EStateType : uint8
 {
-	Idle = 0, Evade, Hitted, Dead, Action, Max,
+	Idle = 0, Evade, Hitted, Guard, Dead, Action, Max,
 };
 
 DECLARE_DELEGATE_TwoParams(FStateTypeChanged, EStateType, EStateType);
@@ -25,6 +25,7 @@ public:
 	FORCEINLINE bool IsHittedMode() { return Type == EStateType::Hitted; }
 	FORCEINLINE bool IsDeadMode() { return Type == EStateType::Dead; }
 	FORCEINLINE bool IsActionMode() { return Type == EStateType::Action; }
+	FORCEINLINE bool IsGuardMode() { return Type == EStateType::Guard; }
 
 	EStateType GetType() { return Type; }
 
@@ -46,7 +47,10 @@ public:
 	void SetStateHitted();
 	void SetStateDead();
 	void SetStateAction();
-	void SetInBattle(bool Input);
+	void SetStateGuard();
+
+	void SetInBattleTrue();
+	void SetInBattleFalse();
 
 private:
 	UFUNCTION()
@@ -56,7 +60,7 @@ public:
 	FStateTypeChanged OnStateTypeChanged;
 
 private:
-	TObjectPtr<AJHPCharacter> OwnerCharacter;
+	TObjectPtr<ACharacter> OwnerCharacter;
 
 	EStateType Type;
 };
