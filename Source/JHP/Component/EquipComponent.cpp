@@ -48,7 +48,7 @@ void UEquipComponent::RefreshEquipmentInfo()
 
 void UEquipComponent::EquipWeapon()
 {
-	// TODO : 개선 필요 부분
+	// NOTICE : 개선 필요 부분
 	WeaponSlot->AttachTo(OwnerCharacter->GetMesh(), "handr_weapon");
 }
 

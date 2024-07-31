@@ -34,7 +34,7 @@ FActionAssetPluginStyle::FActionAssetPluginStyle()
     StyleSet->SetContentRoot(FPaths::EnginePluginsDir() + "Resources");
 
 
-    /* TODO :: 이미지 안나옴 */
+    /* UNDONE :: 이미지 안나옴 */
     FString ImagePath = FPaths::ProjectPluginsDir() + "Resources" + TEXT("Create_Job_Icon.png");
     FSlateImageBrush* ImageBrush = new FSlateImageBrush(ImagePath, Icon20x20);
     StyleSet->Set("ActionAssetPlugin.PluginAction", ImageBrush);
