@@ -8,8 +8,10 @@
 #include "InputActionValue.h"
 //#include "JHP/Component/StateComponent.h"
 #include "MotionWarpingComponent.h"
+#include "JHP/Component/StatusComponent.h"
 #include "JHPCharacter.generated.h"
 
+class UCWB_HUD;
 class USpringArmComponent;
 class UCameraComponent;
 class UStateComponent;
@@ -34,8 +36,8 @@ class AJHPCharacter : public ACCharacterBase
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> CameraComponent;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component, meta = (AllowPrivateAccess = "true"))
-	//TObjectPtr<UStateComponent> StateComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStatusComponent> StatusComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Component, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UJobComponent> JobComponent;
@@ -53,11 +55,12 @@ public:
 	/* Getter */
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return SpringArmComponent; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return CameraComponent; }
-	//FORCEINLINE UStateComponent* GetStateComponent() const { return StateComponent; }
+	FORCEINLINE UStatusComponent* GetStatusComponent() const { return StatusComponent; }
 	FORCEINLINE UJobComponent* GetJobComponent() const { return JobComponent; }
 	FORCEINLINE UTargetingComponent* GetTargetComponent() const { return TargetComponent; }
 	FORCEINLINE UAnimInstance* GetAnimInstance() const { return GetMesh()->GetAnimInstance(); }
-	FORCEINLINE UCUIManager* GetUImanager() const { return UIManager; }
+	FORCEINLINE UCWB_HUD* GetHUD() const { return WB_HUD; }
+
 
 	/* Input */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -76,6 +79,9 @@ public:
 	class UInputAction* AttackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* SprintAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* VaultAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -83,19 +89,28 @@ public:
 
 	/* UI */
 private:
-	TSubclassOf<UCUIManager> UIManagerClass;
+	TSubclassOf<UCWB_HUD> UCWB_HUD_Class;
+	TObjectPtr<UCWB_HUD> WB_HUD = nullptr;
 
 public:
 	AJHPCharacter();
 
 	void ControlCamera(bool Input);
 
+	// Input
 protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Attack();
 	void StartGuard();
 	void StopGuard();
+
+	// Sprint
+	FTimerHandle TimerHandle;
+	void Sprint();
+	void StopSprint();
+	UFUNCTION()
+	void DrainStamina();
 
 
 	// ÆÄÄí¸£ ( Vault )
@@ -112,6 +127,14 @@ private:
 	FVector VaultLandPos;
 
 	bool CanWarp;
+
+	// Damage
+public:
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION()
+	void AnyDamage(float InValue);
+	void Die();
 
 protected:
 	// State °ü·Ã
@@ -131,5 +154,5 @@ protected:
 	virtual void BeginPlay();
 
 private:
-	TObjectPtr<UCUIManager> UIManager = nullptr;
+	//TObjectPtr<UCUIManager> UIManager = nullptr;
 };

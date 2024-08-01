@@ -15,6 +15,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "JHP/Equipment/Equipment.h"
 #include "JHP/UI/CUIManager.h"
+#include "JHP/UI/CWB_HUD.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -49,7 +50,7 @@ AJHPCharacter::AJHPCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	CameraComponent->bUsePawnControlRotation = false;
 
-	//StateComponent = CreateDefaultSubobject<UStateComponent>(TEXT("State Component"));
+	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("Status Component"));
 	JobComponent = CreateDefaultSubobject<UJobComponent>(TEXT("Job Component"));
 	EquipComponent = CreateDefaultSubobject<UEquipComponent>(TEXT("Equip Component"));
 	TargetComponent = CreateDefaultSubobject<UTargetingComponent>(TEXT("TargetComponent"));
@@ -62,17 +63,11 @@ AJHPCharacter::AJHPCharacter()
 		GetMesh()->SetAnimClass(instance);
 	}
 
-	//static ConstructorHelpers::FObjectFinder<UInputAction> InputActionVaultRef(TEXT(""));
-	//if(InputActionVaultRef.Object)
-	//{
-	//	VaultAction = InputActionVaultRef.Object;
-	//}
-
 	/* UI */
-	static ConstructorHelpers::FClassFinder<UCUIManager> WB_UIMANAGER(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/06_UI/BP_CUIManager.BP_CUIManager_C'"));
-	if(WB_UIMANAGER.Succeeded())
+	static ConstructorHelpers::FClassFinder<UCWB_HUD> CWB_HUD(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/06_UI/WB_HUD.WB_HUD_C'"));
+	if(CWB_HUD.Succeeded())
 	{
-		UIManagerClass = WB_UIMANAGER.Class;
+		UCWB_HUD_Class = CWB_HUD.Class;
 	}
 }
 
@@ -104,9 +99,9 @@ void AJHPCharacter::BeginPlay()
 		}
 	}
 
-	/* UI Manager 세팅 */
-	UIManager = Cast<UCUIManager>(CreateWidget(GetWorld(), UIManagerClass));
-	UIManager->AddToViewport();
+	/* UI 세팅 */
+	WB_HUD = Cast<UCWB_HUD>(CreateWidget(GetWorld(), UCWB_HUD_Class));
+	WB_HUD->AddToViewport();
 
 
 	JobComponent->ChangeJob(EJob::Warrior);
@@ -136,6 +131,10 @@ void AJHPCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AJHPCharacter::Look);
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, TargetComponent.Get(), &UTargetingComponent::BeginTarget);
+
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AJHPCharacter::Sprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AJHPCharacter::StopSprint);
+
 		EnhancedInputComponent->BindAction(VaultAction, ETriggerEvent::Started, this, &AJHPCharacter::Vault);
 
 		EnhancedInputComponent->BindAction(GuardAction, ETriggerEvent::Ongoing, this, &AJHPCharacter::StartGuard);
@@ -146,6 +145,8 @@ void AJHPCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 		//DefaultMappingContext->MapKey(AttackAction, EKeys::T);
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 void AJHPCharacter::Move(const FInputActionValue& Value)
 {
@@ -202,6 +203,25 @@ void AJHPCharacter::StartGuard()
 
 void AJHPCharacter::StopGuard()
 {
+}
+
+void AJHPCharacter::Sprint()
+{
+	// 스테미나 사용 0.1초 마다 호출
+	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &AJHPCharacter::DrainStamina);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.1f, true);
+
+	GetCharacterMovement()->MaxWalkSpeed = 750.0f;
+}
+
+void AJHPCharacter::StopSprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+}
+
+void AJHPCharacter::DrainStamina()
+{
+	GetStatusComponent()->UseStamina(1.0f);
 }
 
 void AJHPCharacter::Vault()
@@ -315,6 +335,26 @@ void AJHPCharacter::VaultMotionWarp()
 			UE_LOG(LogTemp, Warning, TEXT("MotionWarpingComponent is not initialized!"));
 		}
 	}
+}
+
+float AJHPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	AnyDamage(DamageAmount);
+
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void AJHPCharacter::AnyDamage(float InValue)
+{
+	if (GetStatusComponent()->Damage(InValue))
+		Die();
+}
+
+void AJHPCharacter::Die()
+{
+	DisableInput(Cast<APlayerController>(GetController()));
+	GetMesh()->SetSimulatePhysics(true);
 }
 
 void AJHPCharacter::StateTypeChanged(EStateType PrevType, EStateType InType)
